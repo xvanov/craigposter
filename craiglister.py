@@ -21,7 +21,7 @@ from os import listdir
 from gmail import Gmail
 from datetime import date
 from PIL import Image
-from dotenv import load_dotenv, find_dotenv
+#from dotenv import load_dotenv, find_dotenv
 from os.path import abspath, join, dirname
 import traceback
 import random
@@ -33,7 +33,7 @@ import random
 options = webdriver.ChromeOptions()
 ua = UserAgent()
 userAgent = ua.random
-options.add_argument("--headless") # Runs Chrome in headless mode.
+#options.add_argument("--headless") # Runs Chrome in headless mode.
 options.add_argument('--no-sandbox') # Bypass OS security model
 options.add_argument("--disable-dev-shm-usage")
 options.add_argument("--disable-gpu")
@@ -55,8 +55,8 @@ listedFolderDirectory = os.path.join(listingsFolderDirectory,"listed")
 
 #------------------Pull in email credentials---------------
 #dotenv_path = join(dirname(__file__), 'settings_craiglister.env')
-dotenv_path = '/home/ubuntu/CraigListerSettings/settings_craiglister.env'
-load_dotenv(dotenv_path)
+#dotenv_path = '/home/ubuntu/CraigListerSettings/settings_craiglister.env'
+#load_dotenv(dotenv_path)
 
 
 #------------------------------- Set Up Necessary Directories ---------
@@ -134,7 +134,8 @@ def clickListingCategory(listing):
     #listing.driver.find_element_by_xpath("//section/form/blockquote//label[contains(.,'" + listing.category + "')]/input").click()
 
 def clickAcceptTerms(listing):
-    listing.driver.find_element_by_partial_link_text("chicago.craigslist.org").click()
+    listing.driver.find_element_by_xpath("/html/body/form[1]/input[4]").click()
+    #listing.driver.find_element_by_partial_link_text("chicago.craigslist.org").click()
 
 def clickPublishListing(listing):
     listing.driver.find_element_by_xpath('//button[text()="publish"]').click()
@@ -170,17 +171,17 @@ def elementNameVisible(element):
     print("Element {} is visible? ".format(element) + str(listing.driver.find_element_by_name(element).is_displayed()))
 
 def fillOutGeolocation(listing):
-    time.sleep(1)
+    #time.sleep(1)
     elementNameVisible('xstreet0')
     #options.add_argument("window-size=1200x600")
     listing.driver.find_element_by_name("xstreet0").send_keys(listing.street)
     listing.driver.find_element_by_name("xstreet1").send_keys(listing.xstreet)
     #listing.driver.find_element_by_name("city").send_keys(listing.city)
     #listing.driver.find_element_by_name("region").send_keys(listing.state)
-    time.sleep(1)
+    #time.sleep(1)
     #elementIdVisible('search_button')
     listing.driver.find_element_by_id("search_button").click()
-    time.sleep(1)
+    #time.sleep(1)
     listing.driver.find_element_by_xpath("//*[@id='leafletForm']/button[1]").click()
 
 def removeImgExifData(path):
@@ -199,7 +200,7 @@ def uploadListingImages(listing):
     for image in listing.images:
         removeImgExifData(image)
         uploadImagePath(listing,image)
-        time.sleep(1)
+        #time.sleep(1)
     clickDoneOnImageUploading(listing)
 
 def postListing(listing):
@@ -246,26 +247,27 @@ def getCraigslistEmailUrl(listing,emails):
             email.delete()
             print("Confirmation URL: https{0}".format(acceptTermsLink[0]))
             return acceptTermsLink[0]
- 
+
 
 def acceptTermsAndConditions(listing,termsUrl):
     listing.driver.get("https" + termsUrl)
     print("URL loaded: https{0}".format(termsUrl))
-    clickAcceptTerms(listing)
+    #clickAcceptTerms(listing)
     #time.sleep(10)
 
 def acceptEmailTerms(listing):
     gmail = Gmail()
-    print(gmailUser,os.getenv("GMAILPASS"))
+    #print(gmailUser,os.getenv("GMAILPASS"))
     gmail.login(gmailUser,os.getenv("GMAILPASS"))
     today = date.today()
     year = today.year
     month = today.month
     day = today.day
-    
+
     print("Receiving email confirmation...")
-    print('sleep for 15 s')
-    time.sleep(15)
+    sleep_time = 2
+    print('sleep for {} s'.format(sleep_time))
+    time.sleep(sleep_time)
     print ("Checking email")
     emails = gmail.inbox().mail(sender="robot@craigslist.org",unread=True,after=datetime.date(year, month, day-1))
     termsUrl = getCraigslistEmailUrl(listing,emails)
@@ -412,8 +414,9 @@ for listingFolder in listingFolders:
         listing.driver.stop_client()
 
         moveToListedFolder(listingFolder,listedFolderDirectory)
-        print ("Waiting 30 seconds")
-        time.sleep(30)
+        sleeptime = 5
+        print ("Waiting {} seconds".format(sleeptime))
+        time.sleep(sleeptime)
 
     else: #Sends an email when an error occurs
 
