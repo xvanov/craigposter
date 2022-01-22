@@ -1,0 +1,9 @@
+*.jpg
+*.jpeg
+*.ini
+envvars.sh
+*.pyc
+*.env
+*.DS_Store
+.venv/*
+__pycache__/*
