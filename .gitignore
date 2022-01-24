@@ -1,3 +1,5 @@
+*.hocon
+listings/*
 listed/*
 *.jpg
 *.jpeg

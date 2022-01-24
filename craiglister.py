@@ -21,12 +21,12 @@ from os import listdir
 from gmail import Gmail
 from datetime import date
 from PIL import Image
-#from dotenv import load_dotenv, find_dotenv
 from os.path import abspath, join, dirname
 import traceback
 import random
+from time import sleep
 
-
+from pyhocon import ConfigFactory
 
 
 #--------------------------------------- Importing Stuff ----------------------
@@ -50,13 +50,6 @@ file_dir = os.path.normpath(file_path + os.sep + os.pardir)
 listingsFolderDirectory = os.path.abspath(os.path.join(file_dir, "listings"))
 listedFolderDirectory = os.path.join(listingsFolderDirectory,"listed")
 
-
-
-
-#------------------Pull in email credentials---------------
-#dotenv_path = join(dirname(__file__), 'settings_craiglister.env')
-#dotenv_path = '/home/ubuntu/CraigListerSettings/settings_craiglister.env'
-#load_dotenv(dotenv_path)
 
 
 #------------------------------- Set Up Necessary Directories ---------
@@ -337,9 +330,11 @@ def getOrderedListingImages(listingFolder):
     return orderedListingImages
 
 
+# read config
+conf = ConfigFactory.parse_file(file_dir + '/conf/listings.conf')
+print(conf['europe'])
 
-
-
+sleep(1000)
 # Get all the date folders of listed items
 listedItemsFolders = [folder for folder in os.listdir(listedFolderDirectory) if folder[0] != "."]
 
